@@ -14,6 +14,7 @@ from messengerplatform.replies import Reply, TextReply, QuickReply
 
 PAGE_ACCESS_TOKEN = settings.PAGE_ACCESS_TOKEN
 VERIFY_TOKEN = settings.VERIFY_TOKEN
+
 class BotView(generic.View):
     def get(self, request, *args, **kwargs):
         if self.request.GET['hub.verify_token'] == VERIFY_TOKEN:
@@ -34,10 +35,14 @@ class BotView(generic.View):
         for m in messages:
             #print(m.sender_name, m.type)
             #rep = Reply(m.sender)
-
-            quick_reply = QuickReply(m.sender, title_text="Hello {}, What can I do for you today".format(m.sender_name))
-            quick_reply.add(content_type="text", title="View Sites",payload="view")
-            quick_reply.add(content_type="text", title="Add New Site", payload="add")
-            quick_reply.send()
+            if m.type == "text":
+                quick_reply = QuickReply(m.sender, title_text="Hello {}, What can I do for you today".format(m.sender_name))
+                quick_reply.add(content_type="text", title="View Sites",payload="view")
+                quick_reply.add(content_type="text", title="Add New Site", payload="add")
+                quick_reply.send()
+            elif m.type == "quick_reply" and m.payload == "add":
+                text_reply = TextReply(m.sender)
+                text_reply.set(message = "New Site will be added")
+                text_reply.send()
 
         return HttpResponse()

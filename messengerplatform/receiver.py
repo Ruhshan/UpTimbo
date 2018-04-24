@@ -7,6 +7,19 @@ VERIFY_TOKEN = settings.VERIFY_TOKEN
 from pprint import pprint
 class Message():
     """
+    A object oriented representation of incoming messages
+
+    Args:
+        data (dict): Json parsed dictinary
+    Attributes:
+        data (dict): received data dictionary
+        sender (str): sender id
+        recipient (str): recipient id
+        timestamp (str): unix timestamp
+        type (str): message type
+        text (str): text for text type message
+        payload (str): payload for quick reply
+        sender_name (str): sender's name
 
     """
     def __init__(self, data):
@@ -16,11 +29,17 @@ class Message():
         self.timestamp = data['timestamp']
         self.type = self.__get_type()
         self.text = None
+        self.payload = None
         self.__user_detail = self.__get_user_details()
         self.sender_name = self.__user_detail['first_name'] +' '+ self.__user_detail['last_name']
         if self.type=='text':
             try:
                 self.text = data['message']['text']
+            except:
+                pass
+        elif self.type == "quick_reply":
+            try:
+                self.payload = data['message']['quick_reply']['payload']
             except:
                 pass
 

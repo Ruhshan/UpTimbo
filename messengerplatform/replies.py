@@ -26,16 +26,20 @@ class Reply:
             "message": message
         })
 
-        pprint(data)
         r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=self.params, headers=self.headers, data=data)
         print(r.status_code)
-        print(r.text)
+        ##print(r.text)
         if r.status_code != 200:
             print("Jhamelaaaaaa")
+            print(r.text)
 
 
 
 class TextReply(Reply):
+    """
+    Simple Text Base Reply
+
+    """
     def set(self, message):
         self.message = {"text":message}
 
