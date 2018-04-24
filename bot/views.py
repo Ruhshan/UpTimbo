@@ -40,9 +40,15 @@ class BotView(generic.View):
                 quick_reply.add(content_type="text", title="View Sites",payload="view")
                 quick_reply.add(content_type="text", title="Add New Site", payload="add")
                 quick_reply.send()
-            elif m.type == "quick_reply" and m.payload == "add":
-                text_reply = TextReply(m.sender)
-                text_reply.set(message = "New Site will be added")
-                text_reply.send()
+            elif m.type == "quick_reply":
+                if m.payload == "add":
+                    text_reply = TextReply(m.sender)
+                    text_reply.set(message="New Site will be added")
+                    text_reply.send()
+                elif m.payload == "view":
+                    #TextReply(m.sender).set(message="You will see site list").send()
+                    text_reply = TextReply(m.sender)
+                    text_reply.set(message="You will see ur sites")
+                    text_reply.send()
 
         return HttpResponse()

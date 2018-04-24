@@ -70,12 +70,10 @@ class QuickReply(Reply):
         }
         self.quick_replies.append(quick_reply)
 
-
-
     def send(self):
         quick_reply = {"text":self.title_text, "quick_replies":self.quick_replies}
-        pprint(quick_reply)
-        print(type(quick_reply))
+        # pprint(quick_reply)
+        # print(type(quick_reply))
         self._send(quick_reply)
 
 """
