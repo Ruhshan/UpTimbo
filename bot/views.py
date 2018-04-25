@@ -42,14 +42,10 @@ class BotView(generic.View):
                 quick_reply.send()
             elif m.type == "quick_reply":
                 if m.payload == "add":
-                    # text_reply = TextReply(m.sender)
-                    # text_reply.set(message="New Site will be added")
-                    # text_reply.send()
                     add_site = WebViewReply(m.sender)
                     add_site.set(text="sample text", title="sample title", url="https://2ac493f7.ngrok.io/sitemonitor/add")
                     add_site.send()
                 elif m.payload == "view":
-                    #TextReply(m.sender).set(message="You will see site list").send()
                     text_reply = TextReply(m.sender)
                     text_reply.set(message="You will see ur sites")
                     text_reply.send()
