@@ -25,10 +25,10 @@ class Reply:
             },
             "message": message
         })
-
+        print(data)
         r = requests.post("https://graph.facebook.com/v2.6/me/messages", params=self.params, headers=self.headers, data=data)
         print(r.status_code)
-        ##print(r.text)
+        print(r.text)
         if r.status_code != 200:
             print("Jhamelaaaaaa")
             print(r.text)
@@ -46,7 +46,37 @@ class TextReply(Reply):
     def send(self):
         self._send(self.message)
 
+class WebViewReply(Reply):
 
+    def set(self, text, url, title):
+        """
+            Web view setter
+            Args:
+                text (str): text to be shown
+                url (str): url to show
+                title (str): title of url
+
+            """
+        self.message =  {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "button",
+                    "text": text,
+                    "buttons": [
+                        {
+                            "type": "web_url",
+                            "url": url,
+                            "title": title,
+                            "webview_height_ratio": "compact",
+                            "messenger_extensions": False
+                        }
+                    ]
+                }
+            }
+        }
+    def send(self):
+        self._send(self.message)
 class QuickReply(Reply):
     def __init__(self, recipient, title_text):
         self.title_text = title_text
