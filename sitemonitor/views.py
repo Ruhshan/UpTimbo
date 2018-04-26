@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from .models import *
 from pprint import pprint
+import json
 
 class SiteAdd(generic.View):
     @method_decorator(csrf_exempt)
@@ -34,9 +35,8 @@ class SiteAdd(generic.View):
                 response['X-Frame-Options'] = 'ALLOW-FROM https://www.facebook.com/'
         return response
 
-
-
     def post(self, request):
         print(request.body)
-        return HttpResponse("Thank u  close the message")
+        data = {"message":"success"}
+        return HttpResponse(json.dumps(data), content_type="application/json")
 

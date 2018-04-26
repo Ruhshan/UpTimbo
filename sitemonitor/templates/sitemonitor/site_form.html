@@ -16,9 +16,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
+    <!--Jquery-->
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+
+
 </head>
 <body>
-<script>
+<!--script>
     (function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) {
@@ -66,7 +72,7 @@
     }
 
 
-</script>
+</script-->
 <!--form action="" method="post">
     <input type="hidden" name="psid" id="psid">
     <p><label for="id_user">User:</label> <input type="text" name="user" required maxlength="50" id="id_user" /></p>
@@ -77,46 +83,61 @@
 </form-->
 
 <div id="app">
-<div class="uk-form-stacked uk-container">
-    <input type="text" name="psid" id="psid" value="none" hidden>
+    <div v-show="!showmessage" class="formclass">
+        <div class="uk-form-stacked uk-container">
+            <input type="text" name="psid" id="psid" value="none" hidden>
 
-    <div class="uk-margin">
-        <label class="uk-form-label" for="form-stacked-text">Name</label>
-        <div class="uk-form-controls">
-            <input class="uk-input" id="id_name" name="name" type="text" v-model="name" placeholder="Give a name" required>
-        </div>
-    </div>
-
-    <div class="uk-margin">
-        <label class="uk-form-label" for="form-stacked-text">URL</label>
-        <div class="uk-form-controls">
-            <input class="uk-input" id="id_url" name="url" type="text" v-model="url" placeholder="Provide the URL" required>
-        </div>
-    </div>
-
-    <div class="uk-margin">
-        <label class="uk-form-label" for="form-stacked-text">Interval</label>
-        <div class="uk-form-controls">
-
-            <div uk-grid>
-                <div class="uk-width-3-4">
-                    <input class="uk-range" type="range" value="2" min="2" max="10" step=".1" v-model="interval">
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">Name</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="id_name" name="name" type="text" v-model="name"
+                           placeholder="Give a name" required>
                 </div>
-
-                <div class="uk-width-1-4 uk-text-small" id="id_interval_rounded">
-                    2 Mins.
-                </div>
-
             </div>
+
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">URL</label>
+                <div class="uk-form-controls">
+                    <input class="uk-input" id="id_url" name="url" type="text" v-model="url"
+                           placeholder="Provide the URL" required>
+                </div>
+            </div>
+
+            <div class="uk-margin">
+                <label class="uk-form-label" for="form-stacked-text">Interval</label>
+                <div class="uk-form-controls">
+
+                    <div uk-grid>
+                        <div class="uk-width-3-4">
+                            <input class="uk-range" type="range" value="2" min="2" max="10" step=".1"
+                                   v-model="interval">
+                        </div>
+
+                        <div class="uk-width-1-4 uk-text-small" id="id_interval_rounded">
+                            2 Mins.
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+            <br>
+
+        </div>
+        <button v-on:click="save" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom"
+                >Save
+        </button>
+    </div>
+    <div v-show="showmessage" class="messageclass">
+        <div class="uk-container">
+            Thank you
+        </div>
+        <div >
+            <button v-on:click="showform" class="uk-button uk-width-1-1 uk-button-primary">Add Another</button>
+            <button class="uk-button uk-width-1-1 uk-button-default">Close</button>
         </div>
     </div>
-
-
-
-    <br>
-
-</div>
-    <button v-on:click="save" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" style="position: absolute; bottom:0">Save</button>
 </div>
 
 <script>
@@ -128,6 +149,7 @@
             name:'',
             url:'',
             interval:2,
+            showmessage:false,
         },
 
         methods:{
@@ -140,14 +162,44 @@
                     psid:document.getElementById('psid').value,
                   };
                 console.log(data);
-                axios.post('https://uptimbo.herokuapp.com/sitemonitor/add', data).then(function(response){
-                   console.log(response);
-                    MessengerExtensions.requestCloseBrowser(function success() {
+                var l_host = 'http://localhost:8000/sitemonitor/add'
+                var r_host = 'https://uptimbo.herokuapp.com/sitemonitor/add'
+                axios.post(l_host, data).then(function(response){
+                    if(response.data.message == "success"){
+                        /*Hide form and show message*/
+                        var $hide_at_left = $(".formclass");
+                        $hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse').addClass('uk-animation-slide-left uk-animation-reverse');
+
+                        setTimeout(function () {
+                        app.$data.showmessage=true;
+                        var $show_from_left = $(".messageclass");
+                        $show_from_left.removeClass('uk-animation-slide-right uk-animation-reverse').addClass('uk-animation-slide-right');
+                        },500);
+
+
+                    }
+                   /*var response_data = JSON.parse(response.data);
+
+                   console.log(response_data);*/
+                    /*MessengerExtensions.requestCloseBrowser(function success() {
                         console.log("Webview closing");
                     }, function error(err) {
                         console.log(err);
-                    });
+                    });*/
                 });
+            },
+            showform:function (event) {
+                /*var $hide_at_left = $(".formclass");
+                $hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse');*/
+                var $show_from_left = $(".messageclass");
+                $show_from_left.removeClass('uk-animation-slide-right uk-animation-reverse').addClass('uk-animation-slide-right uk-animation-reverse');
+
+
+                setTimeout(function () {
+                    app.$data.showmessage = false;
+                    var $hide_at_left = $(".formclass");
+                    $hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse').addClass('uk-animation-slide-left');
+                }, 500);
             }
         },
         watch:{
