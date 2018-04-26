@@ -24,7 +24,7 @@
 
 </head>
 <body>
-<!--script>
+<script>
     (function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) {
@@ -72,7 +72,7 @@
     }
 
 
-</script-->
+</script>
 <!--form action="" method="post">
     <input type="hidden" name="psid" id="psid">
     <p><label for="id_user">User:</label> <input type="text" name="user" required maxlength="50" id="id_user" /></p>
@@ -164,7 +164,7 @@
                 console.log(data);
                 var l_host = 'http://localhost:8000/sitemonitor/add'
                 var r_host = 'https://uptimbo.herokuapp.com/sitemonitor/add'
-                axios.post(l_host, data).then(function(response){
+                axios.post(r_host, data).then(function(response){
                     if(response.data.message == "success"){
                         /*Hide form and show message*/
                         var $hide_at_left = $(".formclass");
