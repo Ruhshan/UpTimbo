@@ -142,6 +142,11 @@
                 console.log(data);
                 axios.post('https://uptimbo.herokuapp.com/sitemonitor/add', data).then(function(response){
                    console.log(response);
+                    MessengerExtensions.requestCloseBrowser(function success() {
+                        console.log("Webview closing");
+                    }, function error(err) {
+                        console.log(err);
+                    });
                 });
             }
         },
