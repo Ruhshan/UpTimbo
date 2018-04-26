@@ -149,3 +149,5 @@ STATICFILES_DIRS = [
 
 
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+WEB_VIEW_URL = "https://uptimbo.herokuapp.com/sitemonitor/add"

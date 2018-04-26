@@ -26,7 +26,6 @@ class SiteAdd(generic.View):
         else:
             referer = None
         if referer:
-            print("adding xfame")
             if 'www.messenger.com' in referer:
                 response['X-Frame-Options'] = 'ALLOW-FROM https://www.messenger.com/'
             elif 'm.facebook.com' in referer:
@@ -38,7 +37,6 @@ class SiteAdd(generic.View):
 
 
     def post(self, request):
-        print("in post")
         print(request.body)
         return HttpResponse("Thank u  close the message")
 

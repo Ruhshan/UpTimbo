@@ -100,9 +100,10 @@
             <input class="uk-input" id="id_interval" name="interval" type="number" v-model="interval" placeholder="Set an interval" required>
         </div>
     </div>
+    <br>
 
 </div>
-    <button v-on:click="save" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" style="position: absolute; bottom:0">Save</button>
+    <button v-on:click="save" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" style="relative: absolute; bottom:0">Save</button>
 </div>
 
 <script>
@@ -126,7 +127,7 @@
                     psid:document.getElementById('psid').value,
                   };
                 console.log(data);
-                axios.post('https://a347dcde.ngrok.io/sitemonitor/add', data).then(function(response){
+                axios.post('https://uptimbo.herokuapp.com/sitemonitor/add', data).then(function(response){
                    console.log(response);
                 });
             }
