@@ -18,7 +18,7 @@
 
 </head>
 <body>
-<script>
+<!--script>
     (function (d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) {
@@ -66,7 +66,7 @@
     }
 
 
-</script>
+</script-->
 <!--form action="" method="post">
     <input type="hidden" name="psid" id="psid">
     <p><label for="id_user">User:</label> <input type="text" name="user" required maxlength="50" id="id_user" /></p>
@@ -97,13 +97,26 @@
     <div class="uk-margin">
         <label class="uk-form-label" for="form-stacked-text">Interval</label>
         <div class="uk-form-controls">
-            <input class="uk-input" id="id_interval" name="interval" type="number" v-model="interval" placeholder="Set an interval" required>
+
+            <div uk-grid>
+                <div class="uk-width-3-4">
+                    <input class="uk-range" type="range" value="2" min="2" max="10" step=".1" v-model="interval">
+                </div>
+
+                <div class="uk-width-1-4 uk-text-small" id="id_interval_rounded">
+                    2 Mins.
+                </div>
+
+            </div>
         </div>
     </div>
+
+
+
     <br>
 
 </div>
-    <button v-on:click="save" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" style="relative: absolute; bottom:0">Save</button>
+    <button v-on:click="save" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" style="position: absolute; bottom:0">Save</button>
 </div>
 
 <script>
@@ -114,7 +127,7 @@
         data:{
             name:'',
             url:'',
-            interval:'',
+            interval:2,
         },
 
         methods:{
@@ -132,6 +145,12 @@
                 });
             }
         },
+        watch:{
+            interval:function(val){
+                rounded_interval = Math.round(val);
+                document.getElementById('id_interval_rounded').innerHTML = rounded_interval+" Mins.";
+            }
+        }
 
 
     })
