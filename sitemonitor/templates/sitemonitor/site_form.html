@@ -2,6 +2,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Site Info</title>
+    <meta class="viewport" name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/vue@latest"></script>
+
+    <!-- use the latest release -->
+    <script src="https://unpkg.com/vue-select@latest"></script>
+    <!--script src="suradata.js"></script-->
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css" />
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+
 </head>
 <body>
 <script>
@@ -16,17 +30,20 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'Messenger'));
 
-    window.extAsyncInit = () =
-    >
+    window.extAsyncInit = () =>
     {
 
         MessengerExtensions.getSupportedFeatures(function success(result) {
-            let features = result.supported_features;
+            var features = result.supported_features;
             if (features.includes("context")) {
                 MessengerExtensions.getContext('241429543097582',
                     function success(thread_context) {
                         // success
+                        console.log(thread_context.psid);
+                        //document.getElementById("psid").value = thread_context.psid;
+                        var psidEL = document.getElementById("psid");
                         document.getElementById("psid").value = thread_context.psid;
+                        console.log(psidEL);
                     },
                     function error(err) {
                         // error
@@ -38,25 +55,85 @@
             // error retrieving supported features
             console.log(err);
         });
-        document.getElementById('submitButton').addEventListener('click', function () {
+        /*document.getElementById('submitButton').addEventListener('click', function () {
             MessengerExtensions.requestCloseBrowser(function success() {
                 console.log("Webview closing");
             }, function error(err) {
                 console.log(err);
             });
-        });
+        });*/
 
     }
 
 
 </script>
-<form action="" method="post">
+<!--form action="" method="post">
     <input type="hidden" name="psid" id="psid">
     <p><label for="id_user">User:</label> <input type="text" name="user" required maxlength="50" id="id_user" /></p>
 <p><label for="id_name">Name:</label> <input type="text" name="name" required maxlength="50" id="id_name" /></p>
 <p><label for="id_url">Url:</label> <input type="text" name="url" required maxlength="100" id="id_url" /></p>
 <p><label for="id_interval">Interval:</label> <input type="number" name="interval" value="120" required id="id_interval" /></p>
     <input type="submit" id="submitbutton" value="Save" />
-</form>
+</form-->
+
+<div id="app">
+<div class="uk-form-stacked uk-container">
+    <input type="text" name="psid" id="psid" value="none" hidden>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="form-stacked-text">Name</label>
+        <div class="uk-form-controls">
+            <input class="uk-input" id="id_name" name="name" type="text" v-model="name" placeholder="Give a name" required>
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="form-stacked-text">URL</label>
+        <div class="uk-form-controls">
+            <input class="uk-input" id="id_url" name="url" type="text" v-model="url" placeholder="Provide the URL" required>
+        </div>
+    </div>
+
+    <div class="uk-margin">
+        <label class="uk-form-label" for="form-stacked-text">Interval</label>
+        <div class="uk-form-controls">
+            <input class="uk-input" id="id_interval" name="interval" type="number" v-model="interval" placeholder="Set an interval" required>
+        </div>
+    </div>
+
+</div>
+    <button v-on:click="save" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom" style="position: absolute; bottom:0">Save</button>
+</div>
+
+<script>
+    Vue.component('v-select', VueSelect.VueSelect)
+
+    var app = new Vue({
+        el: "#app",
+        data:{
+            name:'',
+            url:'',
+            interval:'',
+        },
+
+        methods:{
+            save:function(event){
+                console.log("save button called ");
+                data =  {
+                    name: this.name,
+                    url: this.url,
+                    interval:this.interval,
+                    psid:document.getElementById('psid').value,
+                  };
+                console.log(data);
+                axios.post('https://a347dcde.ngrok.io/sitemonitor/add', data).then(function(response){
+                   console.log(response);
+                });
+            }
+        },
+
+
+    })
+</script>
 </body>
 </html>

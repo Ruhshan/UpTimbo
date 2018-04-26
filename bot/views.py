@@ -43,7 +43,7 @@ class BotView(generic.View):
             elif m.type == "quick_reply":
                 if m.payload == "add":
                     add_site = WebViewReply(m.sender)
-                    add_site.set(text="sample text", title="sample title", url="https://2ac493f7.ngrok.io/sitemonitor/add")
+                    add_site.set(text="sample text", title="sample title", url="https://a347dcde.ngrok.io/sitemonitor/add")
                     add_site.send()
                 elif m.payload == "view":
                     text_reply = TextReply(m.sender)
