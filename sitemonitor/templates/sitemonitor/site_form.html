@@ -95,7 +95,7 @@
             {% verbatim %}
             <button v-on:click="edit"class="uk-button uk-width-1-1 uk-button-secondary">Edit {{ name }}</button>
             {% endverbatim %}
-            <button class="uk-button uk-width-1-1 uk-button-default">Close</button>
+            <button v-on:click="close" class="uk-button uk-width-1-1 uk-button-default">Close</button>
         </div>
     </div>
 </div>
@@ -149,11 +149,7 @@
                    /*var response_data = JSON.parse(response.data);
 
                    console.log(response_data);*/
-                    /*MessengerExtensions.requestCloseBrowser(function success() {
-                        console.log("Webview closing");
-                    }, function error(err) {
-                        console.log(err);
-                    });*/
+
                 });
             },
             addanother:function (event) {
@@ -187,6 +183,13 @@
                     formdiv.className = 'uk-animation-slide-left';
                 }, 500);
             },
+            close:function (event) {
+                MessengerExtensions.requestCloseBrowser(function success() {
+                        console.log("Webview closing");
+                    }, function error(err) {
+                        console.log(err);
+                    });
+            }
         },
         watch:{
             interval:function(val){

@@ -161,5 +161,3 @@ except:
     WEB_VIEW_URL = "http://localhost:8000/sitemonitor/add"
 
 
-print(host)
-print("haha")
