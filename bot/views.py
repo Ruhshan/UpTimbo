@@ -43,7 +43,7 @@ class BotView(generic.View):
             elif m.type == "quick_reply":
                 if m.payload == "add":
                     add_site = WebViewReply(m.sender)
-                    add_site.set(text="sample text", title="sample title", url=settings.WEB_VIEW_URL)
+                    add_site.set(text="Adding Site", title="Click to add site", url=settings.WEB_VIEW_URL)
                     add_site.send()
                 elif m.payload == "view":
                     text_reply = TextReply(m.sender)
