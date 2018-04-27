@@ -6,7 +6,6 @@ from django.http.response import HttpResponse
 
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
 from django.conf import settings
 from .models import *
 from pprint import pprint
@@ -20,7 +19,7 @@ class SiteAdd(generic.View):
     def get(self, request):
         print("printing request")
 
-        response = render(request, 'sitemonitor/site_form.html')
+        response = render(request, 'sitemonitor/site_form.html', {'load_sdk':settings.LOAD_SDK, 'endpoint':settings.WEB_VIEW_URL})
 
         if 'HTTP_REFERER' in request.META:
             referer = request.META['HTTP_REFERER']

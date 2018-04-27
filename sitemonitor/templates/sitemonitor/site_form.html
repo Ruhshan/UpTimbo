@@ -25,55 +25,9 @@
 
 </head>
 <body>
-<script>
-    (function (d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) {
-            return;
-        }
-        js = d.createElement(s);
-        js.id = id;
-        js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'Messenger'));
-
-    window.extAsyncInit = () =>
-    {
-
-        MessengerExtensions.getSupportedFeatures(function success(result) {
-            var features = result.supported_features;
-            if (features.includes("context")) {
-                MessengerExtensions.getContext('241429543097582',
-                    function success(thread_context) {
-                        // success
-                        console.log(thread_context.psid);
-                        //document.getElementById("psid").value = thread_context.psid;
-                        var psidEL = document.getElementById("psid");
-                        document.getElementById("psid").value = thread_context.psid;
-                        console.log(psidEL);
-                    },
-                    function error(err) {
-                        // error
-                        console.log(err);
-                    }
-                );
-            }
-        }, function error(err) {
-            // error retrieving supported features
-            console.log(err);
-        });
-        /*document.getElementById('submitButton').addEventListener('click', function () {
-            MessengerExtensions.requestCloseBrowser(function success() {
-                console.log("Webview closing");
-            }, function error(err) {
-                console.log(err);
-            });
-        });*/
-
-    }
-
-
-</script>
+{% if load_sdk %}
+    {% include "sitemonitor/fb_sdk.html" %}
+{% endif %}
 <!--form action="" method="post">
     <input type="hidden" name="psid" id="psid">
     <p><label for="id_user">User:</label> <input type="text" name="user" required maxlength="50" id="id_user" /></p>
@@ -163,9 +117,9 @@
                     psid:document.getElementById('psid').value,
                   };
                 console.log(data);
-                var l_host = 'http://localhost:8000/sitemonitor/add'
-                var r_host = 'https://uptimbo.herokuapp.com/sitemonitor/add'
-                axios.post(r_host, data).then(function(response){
+
+                var endpoint = "{{ endpoint }}";
+                axios.post(endpoint, data).then(function(response){
                     if(response.data.message == "success"){
                         /*Hide form and show message*/
                         var $hide_at_left = jQuery(".formclass");

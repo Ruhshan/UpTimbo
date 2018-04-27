@@ -1,0 +1,49 @@
+<script>
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+            return;
+        }
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "//connect.facebook.com/en_US/messenger.Extensions.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'Messenger'));
+
+    window.extAsyncInit = () =>
+    {
+
+        MessengerExtensions.getSupportedFeatures(function success(result) {
+            var features = result.supported_features;
+            if (features.includes("context")) {
+                MessengerExtensions.getContext('241429543097582',
+                    function success(thread_context) {
+                        // success
+                        console.log(thread_context.psid);
+                        //document.getElementById("psid").value = thread_context.psid;
+                        var psidEL = document.getElementById("psid");
+                        document.getElementById("psid").value = thread_context.psid;
+                        console.log(psidEL);
+                    },
+                    function error(err) {
+                        // error
+                        console.log(err);
+                    }
+                );
+            }
+        }, function error(err) {
+            // error retrieving supported features
+            console.log(err);
+        });
+        /*document.getElementById('submitButton').addEventListener('click', function () {
+            MessengerExtensions.requestCloseBrowser(function success() {
+                console.log("Webview closing");
+            }, function error(err) {
+                console.log(err);
+            });
+        });*/
+
+    }
+
+
+</script>

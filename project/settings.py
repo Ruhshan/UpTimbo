@@ -150,4 +150,12 @@ STATICFILES_DIRS = [
 
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-WEB_VIEW_URL = "https://uptimbo.herokuapp.com/sitemonitor/add"
+
+try:
+    host = config['host']
+    LOAD_SDK = True
+    WEB_VIEW_URL = "https://uptimbo.herokuapp.com/sitemonitor/add"
+except:
+    host = 'local'
+    LOAD_SDK = False
+    WEB_VIEW_URL = "http://localhost:8000/sitemonitor/add"
