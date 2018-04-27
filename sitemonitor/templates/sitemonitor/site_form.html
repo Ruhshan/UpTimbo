@@ -81,10 +81,20 @@
     </div>
     <div v-show="showmessage" id="messagediv">
         <div class="uk-container">
-            Thank you
+        {% verbatim %}
+        <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
+            <h3 class="uk-card-title">Great!</h3>
+            <p><strong>Uptimbo</strong> will monitor your site <strong>{{ url }}</strong> in each <strong>{{ interval }} minutes</strong> interval.
+            If it is found down or unreachable, we'll let you know in this thread pronto!.</p>
         </div>
+        {% endverbatim %}
+        </div>
+        <br>
         <div >
-            <button v-on:click="showform" class="uk-button uk-width-1-1 uk-button-primary">Add Another</button>
+            <button v-on:click="addanother" class="uk-button uk-width-1-1 uk-button-primary">Add Another</button>
+            {% verbatim %}
+            <button v-on:click="edit"class="uk-button uk-width-1-1 uk-button-secondary">Edit {{ name }}</button>
+            {% endverbatim %}
             <button class="uk-button uk-width-1-1 uk-button-default">Close</button>
         </div>
     </div>
@@ -100,6 +110,7 @@
             url:'',
             interval:2,
             showmessage:false,
+            objectid:'',
         },
 
         methods:{
@@ -110,8 +121,9 @@
                     url: this.url,
                     interval:this.interval,
                     psid:document.getElementById('psid').value,
+                    objectid : this.objectid,
                   };
-                console.log(data);
+                //console.log(data);
 
                 var endpoint = "{{ endpoint }}";
                 axios.post(endpoint, data).then(function(response){
@@ -121,13 +133,18 @@
                         //$hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse').addClass('uk-animation-slide-left uk-animation-reverse');
                         formdiv.className = "uk-animation-slide-left uk-animation-reverse";
 
+                        console.log(response.data.name);
                         setTimeout(function () {
                         app.$data.showmessage=true;
+                        app.$data.objectid = response.data.objectid;
                         var messagediv = document.getElementById('messagediv');
                         messagediv.className="uk-animation-slide-right";
                         },500);
 
 
+                    }
+                    else{
+                        console.log("error");
                     }
                    /*var response_data = JSON.parse(response.data);
 
@@ -139,9 +156,13 @@
                     });*/
                 });
             },
-            showform:function (event) {
+            addanother:function (event) {
                 /*var $hide_at_left = $(".formclass");
                 $hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse');*/
+                this.name='';
+                this.url='';
+                this.interval=2;
+                this.objectid='';
                 var messagediv = document.getElementById('messagediv');
                 messagediv.className = 'uk-animation-slide-right uk-animation-reverse';
 
@@ -151,7 +172,21 @@
                     var formdiv = document.getElementById('formdiv');
                     formdiv.className = 'uk-animation-slide-left';
                 }, 500);
-            }
+            },
+            edit:function (event) {
+                /*var $hide_at_left = $(".formclass");
+                $hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse');*/
+
+                var messagediv = document.getElementById('messagediv');
+                messagediv.className = 'uk-animation-slide-right uk-animation-reverse';
+
+
+                setTimeout(function () {
+                    app.$data.showmessage = false;
+                    var formdiv = document.getElementById('formdiv');
+                    formdiv.className = 'uk-animation-slide-left';
+                }, 500);
+            },
         },
         watch:{
             interval:function(val){

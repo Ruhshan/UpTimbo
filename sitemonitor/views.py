@@ -35,7 +35,14 @@ class SiteAdd(generic.View):
         return response
 
     def post(self, request):
-        print(request.body)
-        data = {"message":"success"}
+        json_data = json.loads(request.body.decode())
+
+        print(json_data)
+
+        if json_data['objectid']:
+            object_id = 567
+        else:
+            object_id = 123
+        data = {"message":"success","interval":json_data["interval"], "objectid":object_id,"url":json_data["url"],"name":json_data["name"]}
         return HttpResponse(json.dumps(data), content_type="application/json")
 
