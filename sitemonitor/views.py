@@ -10,6 +10,7 @@ from django.conf import settings
 from .models import *
 from pprint import pprint
 import json
+from messengerplatform.replies import TextReply
 
 class SiteAdd(generic.View):
     @method_decorator(csrf_exempt)
@@ -44,5 +45,9 @@ class SiteAdd(generic.View):
         else:
             object_id = 123
         data = {"message":"success","interval":json_data["interval"], "objectid":object_id,"url":json_data["url"],"name":json_data["name"]}
+        text_reply = TextReply(json_data['psid'])
+        text_reply.set(message="Your site is being monitored")
+        text_reply.send()
+
         return HttpResponse(json.dumps(data), content_type="application/json")
 
