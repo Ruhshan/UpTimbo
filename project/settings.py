@@ -159,3 +159,6 @@ except:
     host = 'local'
     LOAD_SDK = False
     WEB_VIEW_URL = "http://localhost:8000/sitemonitor/add"
+
+
+print(host)
