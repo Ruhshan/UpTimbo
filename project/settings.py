@@ -152,7 +152,7 @@ STATICFILES_DIRS = [
 
 
 try:
-    host = config['host']
+    host = config('host')
     LOAD_SDK = True
     WEB_VIEW_URL = "https://uptimbo.herokuapp.com/sitemonitor/add"
 except:
