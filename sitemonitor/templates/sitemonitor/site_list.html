@@ -16,76 +16,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
-
-    <style>
-
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 43px;
-            height: 20px;
-        }
-
-        .switch input {
-            display: none;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 1px;
-            bottom: 0px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-        }
-
-        input:checked + .slider {
-            background-color: #2196F3;
-        }
-
-        input:focus + .slider {
-            box-shadow: 0 0 1px #2196F3;
-        }
-
-        input:checked + .slider:before {
-            -webkit-transform: translateX(20px);
-            -ms-transform: translateX(20px);
-            transform: translateX(20px);
-        }
-
-        /* Rounded sliders */
-        .slider.round {
-            border-radius: 28px;
-        }
-
-        .slider.round:before {
-            border-radius: 50%;
-        }
-
-    </style>
+    <link rel="stylesheet" href ="{% static '/css/site_list_styles.css' %}"/>
 
 
 </head>
 <body>
+<div id="app">
+<div class="uk-container">
 <ul uk-accordion>
     {% for site in sites %}
-        <input type="hidden" value="{{ site }}"/>
         <li>
             <a class="uk-accordion-title" href="#">{{ site.name }}</a>
             <div class="uk-accordion-content">
@@ -109,7 +48,7 @@
                             <td>
                                 <div>
                                     <label class="switch">
-                                        <input type="checkbox" checked>
+                                        <input type="checkbox" checked v-on:click="togglemonitoring('{{ site }}')">
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -123,6 +62,25 @@
         </li>
     {% endfor %}
 </ul>
+</div>
+
+</div>
+
+<script>
+    Vue.component('v-select', VueSelect.VueSelect)
+    var app = new Vue({
+        el:"#app",
+        data:{
+        },
+
+        methods:{
+            togglemonitoring:function (m) {
+                console.log(m);
+            }
+        }
+
+    });
+</script>
 </body>
 
 </html>
