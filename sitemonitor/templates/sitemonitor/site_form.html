@@ -194,6 +194,7 @@
         watch:{
             interval:function(val){
                 rounded_interval = Math.round(val);
+                this.interval = Math.round(val);
                 document.getElementById('id_interval_rounded').innerHTML = rounded_interval+" Mins.";
             }
         }
