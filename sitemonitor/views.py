@@ -10,7 +10,7 @@ from django.conf import settings
 from .models import *
 from pprint import pprint
 import json
-from messengerplatform.replies import TextReply
+from messengerplatform.replies import TextReply, QuickReply
 from .models import Site
 class SiteAdd(generic.View):
     @method_decorator(csrf_exempt)
@@ -46,9 +46,10 @@ class SiteAdd(generic.View):
             site=Site.objects.create(user=json_data['psid'], name = json_data["name"], url = json_data["url"], interval= json_data["interval"])
             print(site.id)
         data = {"message":"success","interval":json_data["interval"], "objectid":site.id,"url":json_data["url"],"name":json_data["name"]}
-        text_reply = TextReply(json_data['psid'])
-        text_reply.set(message="Your site is being monitored")
-        text_reply.send()
+        quick_reply = QuickReply(json_data['psid'], title_text="Your site is on monitoring.")
+        quick_reply.add(content_type="text", title="View Sites", payload="view")
+        quick_reply.add(content_type="text", title="Add New Site", payload="add")
+        quick_reply.send()
 
         return HttpResponse(json.dumps(data), content_type="application/json")
 
