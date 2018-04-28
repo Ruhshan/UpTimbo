@@ -56,4 +56,17 @@ class SiteList(generic.View):
     def get(self, request, userid):
         sites = Site.objects.filter(user=1650306208417146)
         print(sites)
-        return render(request, 'sitemonitor/site_list.html', {'sites':sites})
+        response = render(request, 'sitemonitor/site_list.html', {'sites':sites})
+        if 'HTTP_REFERER' in request.META:
+            referer = request.META['HTTP_REFERER']
+        else:
+            referer = None
+
+        if referer:
+            if 'www.messenger.com' in referer:
+                response['X-Frame-Options'] = 'ALLOW-FROM https://www.messenger.com/'
+            elif 'm.facebook.com' in referer:
+                response['X-Frame-Options'] = 'ALLOW-FROM http://m.facebook.com/'
+            else:
+                response['X-Frame-Options'] = 'ALLOW-FROM https://www.facebook.com/'
+        return response
