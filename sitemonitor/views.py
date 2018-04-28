@@ -11,7 +11,7 @@ from .models import *
 from pprint import pprint
 import json
 from messengerplatform.replies import TextReply
-
+from .models import Site
 class SiteAdd(generic.View):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -51,3 +51,9 @@ class SiteAdd(generic.View):
 
         return HttpResponse(json.dumps(data), content_type="application/json")
 
+
+class SiteList(generic.View):
+    def get(self, request, userid):
+        sites = Site.objects.filter(user=1650306208417146)
+        print(sites)
+        return render(request, 'sitemonitor/site_list.html', {'sites':sites})
