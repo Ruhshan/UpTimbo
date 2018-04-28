@@ -46,8 +46,8 @@ class BotView(generic.View):
                     add_site.set(text="Adding Site", title="Click to add site", url=settings.WEB_VIEW_URL)
                     add_site.send()
                 elif m.payload == "view":
-                    text_reply = TextReply(m.sender)
-                    text_reply.set(message="You will see ur sites")
-                    text_reply.send()
+                    view_list = WebViewReply(m.sender)
+                    view_list.set(text="Your List", title="Click to view site", url=settings.SITE_LIST_URL+m.sender)
+                    view_list.send()
 
         return HttpResponse()
