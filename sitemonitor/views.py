@@ -43,8 +43,9 @@ class SiteAdd(generic.View):
         if json_data['objectid']:
             object_id = 567
         else:
-            object_id = 123
-        data = {"message":"success","interval":json_data["interval"], "objectid":object_id,"url":json_data["url"],"name":json_data["name"]}
+            site=Site.objects.create(user=json_data['psid'], name = json_data["name"], url = json_data["url"], interval= json_data["interval"])
+            print(site.id)
+        data = {"message":"success","interval":json_data["interval"], "objectid":site.id,"url":json_data["url"],"name":json_data["name"]}
         text_reply = TextReply(json_data['psid'])
         text_reply.set(message="Your site is being monitored")
         text_reply.send()
