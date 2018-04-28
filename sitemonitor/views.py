@@ -41,7 +41,11 @@ class SiteAdd(generic.View):
         print(json_data)
 
         if json_data['objectid']:
-            object_id = 567
+            site = Site.objects.get(id=int(json_data['objectid']))
+            site.name = json_data["name"]
+            site.url = json_data["url"]
+            site.interval = round(float(json_data["interval"]))
+            site.save()
         else:
             site=Site.objects.create(user=json_data['psid'], name=json_data["name"], url=json_data["url"], interval=round(float(json_data["interval"])))
             print(site.id)
