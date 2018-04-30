@@ -156,10 +156,12 @@ try:
     LOAD_SDK = True
     WEB_VIEW_URL = "https://uptimbo.herokuapp.com/sitemonitor/add"
     SITE_LIST_URL = "https://uptimbo.herokuapp.com/sitemonitor/list/"
+    SITE_DETAIL_URL = "https://uptimbo.herokuapp.com/sitemonitor/sitedetail/"
 except:
     host = 'local'
     LOAD_SDK = False
     WEB_VIEW_URL = "http://localhost:8000/sitemonitor/add"
     SITE_LIST_URL = "http://localhost:8000/sitemonitor/list/"
+    SITE_DETAIL_URL = "http://localhost:8000/sitemonitor/sitedetail/"
 
 

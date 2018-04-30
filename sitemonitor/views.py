@@ -62,7 +62,7 @@ class SiteList(generic.View):
     def get(self, request, userid):
         sites = Site.objects.filter(user=1650306208417146)
         print(sites)
-        response = render(request, 'sitemonitor/site_list.html', {'sites':sites})
+        response = render(request, 'sitemonitor/site_list.html', {'sites':sites, 'endpoint':settings.SITE_DETAIL_URL})
         if 'HTTP_REFERER' in request.META:
             referer = request.META['HTTP_REFERER']
         else:
@@ -76,3 +76,21 @@ class SiteList(generic.View):
             else:
                 response['X-Frame-Options'] = 'ALLOW-FROM https://www.facebook.com/'
         return response
+
+class SiteDetail(generic.View):
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return generic.View.dispatch(self, request, *args, **kwargs)
+    def post(self, request):
+        json_data = json.loads(request.body.decode())
+        siteid = json_data['siteid']
+        site = Site.objects.get(id=int(siteid))
+        data = {
+            'name': site.name,
+            'url': site.url,
+            'interval': site.interval,
+            'objectid': site.id,
+            'monitoring': site.ismonitoring
+        }
+
+        return HttpResponse(json.dumps(data), content_type="application/json")

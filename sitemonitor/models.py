@@ -12,4 +12,4 @@ class Site(models.Model):
     ismonitoring = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.user+"@"+self.name
+        return self.user+"@"+str(self.id)
