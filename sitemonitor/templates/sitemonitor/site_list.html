@@ -17,13 +17,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
     <link rel="stylesheet" href ="{% static '/css/site_list_styles.css' %}"/>
+    <link rel="stylesheet" href ="{% static '/css/animate.css' %}"/>
+    <style>
+
+
+    </style>
 
 
 </head>
 <body>
 <div id="app">
 <div class="uk-container">
-<ul v-show="!showform" uk-accordion>
+<transition  enter-active-class="animated fadeInLeft" leave-active-class="animated fadeOutLeft">
+<ul v-show="!showform"  class="fixedComp" uk-accordion id="listdiv">
     {% for site in sites %}
         <li>
             <a class="uk-accordion-title" href="#">{{ site.name }}</a>
@@ -69,8 +75,10 @@
         </li>
     {% endfor %}
 </ul>
+</transition>
 
-<div v-show="showform" id="formdiv">
+<transition enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutRight">
+<div class="fixedComp" v-show="showform" id="formdiv">
         <div class="uk-form-stacked uk-container">
 
             <div class="uk-margin">
@@ -114,12 +122,17 @@
         <button v-on:click="update" class="uk-button uk-button-primary uk-width-1-1 uk-margin-small-bottom"
                 >Update
         </button>
+        <button v-on:click="cancel" class="uk-button uk-button-default uk-width-1-1 uk-margin-small-bottom"
+                >Cancel
+        </button>
     </div>
+</transition>
 </div>
 
 </div>
 
 <script>
+
     Vue.component('v-select', VueSelect.VueSelect)
     var app = new Vue({
         el:"#app",
@@ -141,23 +154,29 @@
             edit:function (m) {
                 var splitted = m.split('@');
 
+
                 data = {
                     userid : splitted[0],
                     siteid : splitted[1]
                 }
                 var endpoint = "{{ endpoint }}";
 
+
                 axios.post(endpoint, data).then(function(response){
-                    console.log(response);
-                    this.name = response.data.name;
-                    this.url = response.data.url;
-                    this.interval = response.data.interval,
-                    this.objectid = response.data.objectid
+                    app.$data.name = response.data.name;
+                    app.$data.url = response.data.url;
+                    app.$data.interval = response.data.interval;
+                    app.$data.objectid = response.data.objectid;
+
+                    app.$data.showform = true;
+
 
                 });
 
 
-                console.log(data);
+            },
+            cancel: function (e) {
+                    app.$data.showform =false;
             }
         }
 
