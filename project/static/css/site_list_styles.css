@@ -58,8 +58,8 @@
 
 
         .fixedComp{
-            /*position: fixed;*/
-            /*width: 90%;*/
+            position: fixed;
+            width: 90%;
         }
 
         .fixedComp2{

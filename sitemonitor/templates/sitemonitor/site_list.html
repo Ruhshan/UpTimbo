@@ -172,7 +172,8 @@
 
             },
             cancel: function (e) {
-                    app.$data.showform =false;
+                setTimeout(function(){app.$data.showform =false;}, 500);
+
             }
         }
 
