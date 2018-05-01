@@ -25,7 +25,7 @@
 <div id="app">
 <div class="uk-container">
 <transition  enter-active-class="animated fadeInLeft" leave-active-class="animated fadeOutLeft">
-<ul v-show="!showform"  class="fixedComp" uk-accordion id="listdiv">
+<ul v-show="!showform" uk-accordion id="listdiv">
     {% for site in sites %}
         <li>
             <a class="uk-accordion-title" href="#">{{ site.name }}</a>
@@ -74,7 +74,7 @@
 </transition>
 
 <transition enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutRight">
-<div class="fixedComp" v-show="showform" id="formdiv">
+<div v-show="showform" id="formdiv">
         <div class="uk-form-stacked uk-container">
 
             <div class="uk-margin">
