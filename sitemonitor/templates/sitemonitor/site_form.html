@@ -1,4 +1,5 @@
 <html lang="en">
+{% load static %}
 <head>
     <meta charset="UTF-8">
     <title>Add Site Info</title>
@@ -16,6 +17,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/js/uikit-icons.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 
+    <link rel="stylesheet" href ="{% static '/css/site_list_styles.css' %}"/>
+    <link rel="stylesheet" href ="{% static '/css/animate.css' %}"/>
 
 
 </head>
@@ -23,24 +26,18 @@
 {% if load_sdk %}
     {% include "sitemonitor/fb_sdk.html" %}
 {% endif %}
-<!--form action="" method="post">
-    <input type="hidden" name="psid" id="psid">
-    <p><label for="id_user">User:</label> <input type="text" name="user" required maxlength="50" id="id_user" /></p>
-<p><label for="id_name">Name:</label> <input type="text" name="name" required maxlength="50" id="id_name" /></p>
-<p><label for="id_url">Url:</label> <input type="text" name="url" required maxlength="100" id="id_url" /></p>
-<p><label for="id_interval">Interval:</label> <input type="number" name="interval" value="120" required id="id_interval" /></p>
-    <input type="submit" id="submitbutton" value="Save" />
-</form-->
+
 
 <div id="app">
-    <div v-show="!showmessage" id="formdiv">
+    <transition leave-active-class="animated fadeOutLeft" enter-active-class="animated fadeInLeft">
+    <div v-show="!showmessage" class="fixedComp2" id="formdiv">
         <div class="uk-form-stacked uk-container">
             <input type="text" name="psid" id="psid" value="none" hidden>
 
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">Name</label>
                 <div class="uk-form-controls">
-                    <input class="uk-input" id="id_name" name="name" type="text" v-model="name"
+                    <input class="uk-input" v-bind:class="{'uk-form-danger':errors.name }" id="id_name" name="name" type="text" v-model="name"
                            placeholder="Give a name" required>
                 </div>
             </div>
@@ -48,7 +45,7 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">URL</label>
                 <div class="uk-form-controls">
-                    <input class="uk-input" id="id_url" name="url" type="text" v-model="url"
+                    <input class="uk-input" v-bind:class="{'uk-form-danger':errors.url }"id="id_url" name="url" type="text" v-model="url"
                            placeholder="Provide the URL" required>
                 </div>
             </div>
@@ -79,7 +76,10 @@
                 >Save
         </button>
     </div>
-    <div v-show="showmessage" id="messagediv">
+    </transition>
+
+    <transition enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutRight">
+    <div v-show="showmessage"  class="fixedComp2" id="messagediv">
         <div class="uk-container">
         {% verbatim %}
         <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
@@ -98,109 +98,12 @@
             <button v-on:click="close" class="uk-button uk-width-1-1 uk-button-default">Close</button>
         </div>
     </div>
+    </transition>
 </div>
 
-<script>
-    Vue.component('v-select', VueSelect.VueSelect)
 
-    var app = new Vue({
-        el: "#app",
-        data:{
-            name:'',
-            url:'',
-            interval:2,
-            showmessage:false,
-            objectid:'',
-        },
-
-        methods:{
-            save:function(event){
-                console.log("save button called ");
-                data =  {
-                    name: this.name,
-                    url: this.url,
-                    interval:Math.round(this.interval),
-                    psid:document.getElementById('psid').value,
-                    objectid : this.objectid,
-                  };
-                //console.log(data);
-
-                var endpoint = "{{ endpoint }}";
-                axios.post(endpoint, data).then(function(response){
-                    if(response.data.message == "success"){
-                        /*Hide form and show message*/
-                        var formdiv = document.getElementById('formdiv');
-                        //$hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse').addClass('uk-animation-slide-left uk-animation-reverse');
-                        formdiv.className = "uk-animation-slide-left uk-animation-reverse";
-
-                        console.log(response.data.name);
-                        setTimeout(function () {
-                        app.$data.showmessage=true;
-                        app.$data.objectid = response.data.objectid;
-                        var messagediv = document.getElementById('messagediv');
-                        messagediv.className="uk-animation-slide-right";
-                        },500);
+{% include 'sitemonitor/site_form_scripts.html' %}
 
 
-                    }
-                    else{
-                        console.log("error");
-                    }
-                   /*var response_data = JSON.parse(response.data);
-
-                   console.log(response_data);*/
-
-                });
-            },
-            addanother:function (event) {
-                /*var $hide_at_left = $(".formclass");
-                $hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse');*/
-                this.name='';
-                this.url='';
-                this.interval=2;
-                this.objectid='';
-                var messagediv = document.getElementById('messagediv');
-                messagediv.className = 'uk-animation-slide-right uk-animation-reverse';
-
-
-                setTimeout(function () {
-                    app.$data.showmessage = false;
-                    var formdiv = document.getElementById('formdiv');
-                    formdiv.className = 'uk-animation-slide-left';
-                }, 500);
-            },
-            edit:function (event) {
-                /*var $hide_at_left = $(".formclass");
-                $hide_at_left.removeClass('uk-animation-slide-left uk-animation-reverse');*/
-
-                var messagediv = document.getElementById('messagediv');
-                messagediv.className = 'uk-animation-slide-right uk-animation-reverse';
-
-
-                setTimeout(function () {
-                    app.$data.showmessage = false;
-                    var formdiv = document.getElementById('formdiv');
-                    formdiv.className = 'uk-animation-slide-left';
-                }, 500);
-            },
-            close:function (event) {
-                MessengerExtensions.requestCloseBrowser(function success() {
-                        console.log("Webview closing");
-                    }, function error(err) {
-                        console.log(err);
-                    });
-            }
-        },
-        watch:{
-            interval:function(val){
-                rounded_interval = Math.round(val);
-                this.interval = Math.round(val);
-                document.getElementById('id_interval_rounded').innerHTML = rounded_interval+" Mins.";
-            }
-        }
-
-
-    })
-</script>
 </body>
 </html>

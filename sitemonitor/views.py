@@ -9,6 +9,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from .models import *
 from pprint import pprint
+from .validator import site_validator
 import json
 from messengerplatform.replies import TextReply, QuickReply
 from .models import Site
@@ -38,24 +39,31 @@ class SiteAdd(generic.View):
     def post(self, request):
         json_data = json.loads(request.body.decode())
 
-        print(json_data)
+        haserror, data = site_validator(json_data)
 
-        if json_data['objectid']:
-            site = Site.objects.get(id=int(json_data['objectid']))
-            site.name = json_data["name"]
-            site.url = json_data["url"]
-            site.interval = round(float(json_data["interval"]))
-            site.save()
+        if haserror:
+            data['message'] = "error"
+            return HttpResponse(json.dumps(data), content_type="application/json")
         else:
-            site=Site.objects.create(user=json_data['psid'], name=json_data["name"], url=json_data["url"], interval=round(float(json_data["interval"])))
-            print(site.id)
-        data = {"message":"success","interval":round(float(json_data["interval"])), "objectid":site.id,"url":json_data["url"],"name":json_data["name"]}
-        quick_reply = QuickReply(json_data['psid'], title_text="Your site is on monitoring.")
-        quick_reply.add(content_type="text", title="View Sites", payload="view")
-        quick_reply.add(content_type="text", title="Add New Site", payload="add")
-        quick_reply.send()
+            if data['objectid']:
+                site = Site.objects.get(id=int(data['objectid']))
+                site.name = data["name"]
+                site.url = data["url"]
+                site.interval = round(float(data["interval"]))
+                #site.save()
+            else:
+                site=Site.objects.create(user=data['psid'], name=data["name"], url=data["url"], interval=round(float(data["interval"])))
+                print('saving')
 
-        return HttpResponse(json.dumps(data), content_type="application/json")
+            data['message']='success'
+            data['objectid']=site.id
+
+            quick_reply = QuickReply(json_data['psid'], title_text="Your site is on monitoring.")
+            quick_reply.add(content_type="text", title="View Sites", payload="view")
+            quick_reply.add(content_type="text", title="Add New Site", payload="add")
+            quick_reply.send()
+
+            return HttpResponse(json.dumps(json_data), content_type="application/json")
 
 
 class SiteList(generic.View):

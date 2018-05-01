@@ -61,3 +61,8 @@
             position: fixed;
             width: 90%;
         }
+
+        .fixedComp2{
+            position: fixed;
+            width: 100%;
+        }
