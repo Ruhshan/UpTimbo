@@ -68,7 +68,7 @@ class WebViewReply(Reply):
                             "type": "web_url",
                             "url": url,
                             "title": title,
-                            "webview_height_ratio": "compact",
+                            "webview_height_ratio": "tall",
                             "messenger_extensions": True
                         }
                     ]
