@@ -19,18 +19,14 @@
     <link rel="stylesheet" href ="{% static '/css/site_list_styles.css' %}"/>
     <link rel="stylesheet" href ="{% static '/css/animate.css' %}"/>
 
-    <script
-			  src="https://code.jquery.com/jquery-3.3.1.min.js"
-			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-			  crossorigin="anonymous"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
 </head>
 <body>
 <div id="app">
 <div class="uk-container">
 <transition  enter-active-class="animated fadeInLeft" leave-active-class="animated fadeOutLeft">
-<ul v-show="!showform" uk-accordion id="listdiv">
+<ul v-show="!showform" class="fixedcomp" uk-accordion id="listdiv">
         {% verbatim %}
         <li v-for="(site, index) in allsites">
             <a class="uk-accordion-title" href="#">{{ site.name }}</a>
@@ -80,7 +76,7 @@
 </transition>
 
 <transition enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutRight">
-<div v-show="showform" id="formdiv">
+<div v-show="showform" class="fixedcomp" id="formdiv">
         <div class="uk-form-stacked uk-container">
 
             <div class="uk-margin">
@@ -147,7 +143,7 @@
             allsites:{},
         },
         created:function(){
-          datasource = "http://localhost:8000/sitemonitor/api/v1/list/1650306208417146";
+          datasource = "/sitemonitor/api/v1/list/1650306208417146";
           axios.get(datasource).then(response => {
               app.$data.allsites = response.data;
           });
@@ -163,29 +159,18 @@
                     name: this.name,
                     url: this.url,
                     interval: Math.round(this.interval),
-                    user: location.pathname.split('/')[3],
+                    
                 };
-
-                jQuery.ajax({
-                    url : "http://localhost:8000/sitemonitor/api/v1/update/1",
-                    data : JSON.stringify(data),
-                    type : 'PATCH',
-                    contentType : 'application/json',
-                    processData: false,
-                    dataType: 'json'
-                    });
-
-                /*var endpoint = "http://localhost:8000/sitemonitor/api/v1/update/1";
-                var axiosConfig = {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        "Access-Control-Allow-Methods": "PATCH, PUT"
-                        }
-                    };
-                console.log(data);
-                axios.put(endpoint,data, axiosConfig).then(function (response) {
+                var csrftoken = Cookies.get('csrftoken');
+                console.log(csrftoken);
+                var endpoint = "/sitemonitor/api/v1/update/1";
+                
+                // console.log(JSON.stringify(data));
+                axios.patch(endpoint,data).then(function (response) {
                     console.log(response);
-                });*/
+                });
+                
+
             },
             edit:function (site) {
                 console.log(site.id);

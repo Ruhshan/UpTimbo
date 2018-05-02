@@ -55,7 +55,10 @@
         .slider.round:before {
             border-radius: 50%;
         }
-
+        
+        .fixedcomp{
+            
+        }
 
         .fixedComp2{
             position: fixed;
