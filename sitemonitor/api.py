@@ -10,7 +10,7 @@ class SiteListAPI(generics.ListAPIView):
         user = self.kwargs['userid']
         return Site.objects.filter(user = int(user))
 
-class SiteUpdateAPI(Cgenerics.UpdateAPIView):
+class SiteUpdateAPI(generics.UpdateAPIView):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
 
