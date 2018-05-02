@@ -40,7 +40,7 @@ class SiteAdd(generic.View):
         json_data = json.loads(request.body.decode())
 
         haserror, data = site_validator(json_data)
-
+        
         if haserror:
             data['message'] = "error"
             return HttpResponse(json.dumps(data), content_type="application/json")
@@ -50,7 +50,7 @@ class SiteAdd(generic.View):
                 site.name = data["name"]
                 site.url = data["url"]
                 site.interval = round(float(data["interval"]))
-                #site.save()
+                site.save()
             else:
                 site=Site.objects.create(user=data['psid'], name=data["name"], url=data["url"], interval=round(float(data["interval"])))
                 print('saving')
@@ -58,19 +58,19 @@ class SiteAdd(generic.View):
             data['message']='success'
             data['objectid']=site.id
 
-            quick_reply = QuickReply(json_data['psid'], title_text="Your site is on monitoring.")
-            quick_reply.add(content_type="text", title="View Sites", payload="view")
-            quick_reply.add(content_type="text", title="Add New Site", payload="add")
-            quick_reply.send()
+            # quick_reply = QuickReply(site.user, title_text="Your site is on monitoring.")
+            # quick_reply.add(content_type="text", title="View Sites", payload="view")
+            # quick_reply.add(content_type="text", title="Add New Site", payload="add")
+            # quick_reply.send()
 
-            return HttpResponse(json.dumps(json_data), content_type="application/json")
+            return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 class SiteList(generic.View):
     def get(self, request, userid):
         sites = Site.objects.filter(user=1650306208417146)
         print(sites)
-        response = render(request, 'sitemonitor/site_list.html', {'sites':sites, 'endpoint':settings.SITE_DETAIL_URL})
+        response = render(request, 'sitemonitor/site_list.html', {'sites':sites, 'endpoint':settings.SITE_DETAIL_URL, 'update_endpoint':settings.WEB_VIEW_URL})
         if 'HTTP_REFERER' in request.META:
             referer = request.META['HTTP_REFERER']
         else:

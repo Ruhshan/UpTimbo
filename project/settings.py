@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     ###
     'bot',
-    'sitemonitor'
+    'sitemonitor',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

@@ -7,7 +7,7 @@
     <script src="https://unpkg.com/vue@latest"></script>
 
     <!-- use the latest release -->
-    <script src="https://unpkg.com/vue-select@latest"></script>
+    <!--script src="https://unpkg.com/vue-select@latest"></script-->
     <!--script src="suradata.js"></script-->
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.40/css/uikit.min.css"/>
@@ -19,6 +19,11 @@
     <link rel="stylesheet" href ="{% static '/css/site_list_styles.css' %}"/>
     <link rel="stylesheet" href ="{% static '/css/animate.css' %}"/>
 
+    <script
+			  src="https://code.jquery.com/jquery-3.3.1.min.js"
+			  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+			  crossorigin="anonymous"></script>
+
 
 </head>
 <body>
@@ -26,8 +31,8 @@
 <div class="uk-container">
 <transition  enter-active-class="animated fadeInLeft" leave-active-class="animated fadeOutLeft">
 <ul v-show="!showform" uk-accordion id="listdiv">
-    {% for site in sites %}
-        <li>
+        {% verbatim %}
+        <li v-for="(site, index) in allsites">
             <a class="uk-accordion-title" href="#">{{ site.name }}</a>
             <div class="uk-accordion-content">
                 <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
@@ -43,14 +48,14 @@
                         </tr>
                         <tr>
                             <td><strong>Status:</strong></td>
-                            <td><img src="{% static 'red_circle.png' %}" height="20px" width="20px"></td>
+                            <td><img src="/static/red_circle.png" height="20px" width="20px"></td>
                         </tr>
                         <tr>
                             <td><strong>Monitoring:</strong></td>
                             <td>
                                 <div>
                                     <label class="switch">
-                                        <input type="checkbox" checked v-on:click="togglemonitoring('{{ site }}')">
+                                        <input type="checkbox" checked v-on:click="togglemonitoring(site)">
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -58,7 +63,7 @@
                         </tr>
                         </tbody>
                         <tr>
-                            <td><button v-on:click="edit('{{ site }}')" class="uk-button uk-button-small uk-button-secondary">Edit</button></td>
+                            <td><button v-on:click="edit(site)" class="uk-button uk-button-small uk-button-secondary">Edit</button></td>
                         </tr>
 
                     </table>
@@ -69,7 +74,8 @@
                 </div>
             </div>
         </li>
-    {% endfor %}
+    {% endverbatim %}
+
 </ul>
 </transition>
 
@@ -129,7 +135,7 @@
 
 <script>
 
-    Vue.component('v-select', VueSelect.VueSelect)
+    
     var app = new Vue({
         el:"#app",
         data:{
@@ -138,42 +144,70 @@
             url:'',
             interval:2,
             objectid:'',
+            allsites:{},
+        },
+        created:function(){
+          datasource = "http://localhost:8000/sitemonitor/api/v1/list/1650306208417146";
+          axios.get(datasource).then(response => {
+              app.$data.allsites = response.data;
+          });
         },
 
         methods:{
-            togglemonitoring:function (m) {
-                console.log(m);
+            togglemonitoring:function (e) {
+                console.log(e);
             },
-            update:function (e) {
-                console.log("updating");
-            },
-            edit:function (m) {
-                var splitted = m.split('@');
-
+            update: function (e) {
 
                 data = {
-                    userid : splitted[0],
-                    siteid : splitted[1]
-                }
-                var endpoint = "{{ endpoint }}";
+                    name: this.name,
+                    url: this.url,
+                    interval: Math.round(this.interval),
+                    user: location.pathname.split('/')[3],
+                };
 
+                jQuery.ajax({
+                    url : "http://localhost:8000/sitemonitor/api/v1/update/1",
+                    data : JSON.stringify(data),
+                    type : 'PATCH',
+                    contentType : 'application/json',
+                    processData: false,
+                    dataType: 'json'
+                    });
 
-                axios.post(endpoint, data).then(function(response){
-                    app.$data.name = response.data.name;
-                    app.$data.url = response.data.url;
-                    app.$data.interval = response.data.interval;
-                    app.$data.objectid = response.data.objectid;
+                /*var endpoint = "http://localhost:8000/sitemonitor/api/v1/update/1";
+                var axiosConfig = {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        "Access-Control-Allow-Methods": "PATCH, PUT"
+                        }
+                    };
+                console.log(data);
+                axios.put(endpoint,data, axiosConfig).then(function (response) {
+                    console.log(response);
+                });*/
+            },
+            edit:function (site) {
+                console.log(site.id);
+                this.$data.name = site.name;
+                this.$data.url = site.url;
+                this.$data.interval = site.interval;
+                this.$data.objectid = site.id;
+                this.$data.showform = true;
 
-                    app.$data.showform = true;
-
-
-                });
 
 
             },
             cancel: function (e) {
                 setTimeout(function(){app.$data.showform =false;}, 500);
 
+            }
+        },
+        watch:{
+            interval:function(val){
+                rounded_interval = Math.round(val);
+                this.interval = Math.round(val);
+                document.getElementById('id_interval_rounded').innerHTML = rounded_interval+" Mins.";
             }
         }
 

@@ -6,7 +6,7 @@ from django.db import models
 class Site(models.Model):
     user = models.CharField(max_length=50)
     name = models.CharField(max_length=50)
-    url = models.CharField(max_length=100)
+    url = models.URLField()
     interval = models.IntegerField(default=120)
     isalive = models.BooleanField(default=False)
     ismonitoring = models.BooleanField(default=True)
