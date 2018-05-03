@@ -166,3 +166,12 @@ except:
     SITE_DETAIL_URL = "http://localhost:8000/sitemonitor/sitedetail/"
 
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'PUT',
+    'DELETE',
+    'OPTIONS',
+    'PATCH',
+)
