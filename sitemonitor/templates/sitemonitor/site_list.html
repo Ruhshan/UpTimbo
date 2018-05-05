@@ -32,22 +32,23 @@
             <a class="uk-accordion-title" href="#">{{ site.name }}</a>
             <div class="uk-accordion-content">
                 <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m">
+
+                    <p style="word-break: break-all;text-align: center"><strong>{{ site.url }}</strong></p>
+
                     <table class="uk-table  uk-table-small">
+
                         <tbody>
+
                         <tr>
-                            <td><strong>URL:</strong></td>
-                            <td>{{ site.url }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Interval:</strong></td>
+                            <td>Interval:</td>
                             <td>{{ site.interval }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Status:</strong></td>
+                            <td>Status:</td>
                             <td><img src="/static/red_circle.png" height="20px" width="20px"></td>
                         </tr>
                         <tr>
-                            <td><strong>Monitoring:</strong></td>
+                            <td>Monitoring:</td>
                             <td>
                                 <div>
                                     <label class="switch">
@@ -59,7 +60,7 @@
                         </tr>
                         </tbody>
                         <tr>
-                            <td><button v-on:click="edit(site)" class="uk-button uk-button-small uk-button-secondary">Edit</button></td>
+                            <td><button v-on:click="edit(site, index)" class="uk-button uk-button-small uk-button-secondary">Edit</button></td>
                         </tr>
 
                     </table>
@@ -82,16 +83,32 @@
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">Name</label>
                 <div class="uk-form-controls">
-                    <input class="uk-input" id="id_name" name="name" type="text" v-model="name"
-                           placeholder="Give a name" required>
+                    <input class="uk-input" id="id_name" v-bind:class="{'uk-form-danger':errors.name }" name="name" type="text" v-model="name"
+                           placeholder="Give a name">
+
+                        {% verbatim %}
+                        <ul v-if="errors.name">
+                            <li v-for="message in errormessages.name">
+                                {{ message }}
+                            </li>
+
+                        </ul>
+                        {% endverbatim %}
                 </div>
             </div>
 
             <div class="uk-margin">
                 <label class="uk-form-label" for="form-stacked-text">URL</label>
                 <div class="uk-form-controls">
-                    <input class="uk-input" id="id_url" name="url" type="text" v-model="url"
-                           placeholder="Provide the URL" required>
+                    <input class="uk-input" id="id_url" v-bind:class="{'uk-form-danger':errors.url }" name="url" type="text" v-model="url"
+                           placeholder="Provide the URL">
+                    {% verbatim %}
+                        <ul v-if="errors.url">
+                            <li v-for="message in errormessages.url">
+                                {{ message }}
+                            </li>
+                        </ul>
+                    {% endverbatim %}
                 </div>
             </div>
 
@@ -141,9 +158,17 @@
             interval:2,
             objectid:'',
             allsites:{},
+            refetch:false,
+            accordionindex:'',
+            errors:{
+                name:false,
+                url:false,
+            },
+            errormessages:{},
         },
         created:function(){
-          datasource = "/sitemonitor/api/v1/list/1650306208417146";
+          uid = window.location.pathname.split('/')[3]
+          datasource = "/sitemonitor/api/v1/list/"+uid;
           axios.get(datasource).then(response => {
               app.$data.allsites = response.data;
           });
@@ -154,6 +179,7 @@
                 console.log(e);
             },
             update: function (e) {
+                this.reset();
 
                 data = {
                     name: this.name,
@@ -163,36 +189,75 @@
                 };
                 // var csrftoken = Cookies.get('csrftoken');
                 // console.log(csrftoken);
-                var endpoint = "/sitemonitor/api/v1/update/1";
+                var endpoint = "/sitemonitor/api/v1/update/"+this.objectid;
                 
                 // console.log(JSON.stringify(data));
-                axios.patch(endpoint,data).then(function (response) {
-                    console.log(response);
-                });
+                axios.patch(endpoint,data)
+                    .then(function (response) {
+                        console.log(response);
+                        app.$data.refetch=true;
+                        setTimeout(function(){app.$data.showform =false;}, 500);
+
+                        UIkit.accordion(document.getElementById("listdiv")).toggle(app.$data.accordionindex);
+
+                    })
+                    .catch(function (error) {
+                        //console.log(error);
+                        app.$data.errormessages = error.response.data;
+                    });
                 
 
             },
-            edit:function (site) {
+            edit:function (site, index) {
                 console.log(site.id);
                 this.$data.name = site.name;
                 this.$data.url = site.url;
                 this.$data.interval = site.interval;
                 this.$data.objectid = site.id;
                 this.$data.showform = true;
+                this.accordionindex = index;
 
 
 
             },
             cancel: function (e) {
                 setTimeout(function(){app.$data.showform =false;}, 500);
+                UIkit.accordion(document.getElementById("listdiv")).toggle(app.$data.accordionindex);
 
+            },
+            reset:function () {
+                console.log("reset called");
+                this.errors.name=false;
+                this.errors.url=false;
             }
+
         },
         watch:{
             interval:function(val){
                 rounded_interval = Math.round(val);
                 this.interval = Math.round(val);
                 document.getElementById('id_interval_rounded').innerHTML = rounded_interval+" Mins.";
+            },
+            errormessages:function (val) {
+                if(val.name){
+                    this.errors.name=true;
+                }
+                if(val.url){
+                    this.errors.url=true;
+                }
+
+            },
+            refetch: function (val) {
+                if (val == true) {
+                    console.log("refetching");
+                    uid = window.location.pathname.split('/')[3]
+                    datasource = "/sitemonitor/api/v1/list/" + uid;
+                    axios.get(datasource).then(response => {
+                        app.$data.allsites = response.data;
+                });
+                    this.refetch=false;
+                }
+
             }
         }
 
