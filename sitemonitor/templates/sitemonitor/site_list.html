@@ -45,14 +45,15 @@
                         </tr>
                         <tr>
                             <td>Status:</td>
-                            <td><img src="/static/red_circle.png" height="20px" width="20px"></td>
+                            <td>
+                                <img v-bind:src="site.image" height="20px" width="20px"></td>
                         </tr>
                         <tr>
                             <td>Monitoring:</td>
                             <td>
                                 <div>
                                     <label class="switch">
-                                        <input type="checkbox" checked v-on:click="togglemonitoring(site)">
+                                        <input type="checkbox" v-bind:checked="site.ismonitoring" v-on:click="togglemonitoring(site)">
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -64,9 +65,6 @@
                         </tr>
 
                     </table>
-
-
-
 
                 </div>
             </div>
@@ -145,124 +143,7 @@
 </div>
 
 </div>
-
-<script>
-
-    
-    var app = new Vue({
-        el:"#app",
-        data:{
-            showform:false,
-            name:'',
-            url:'',
-            interval:2,
-            objectid:'',
-            allsites:{},
-            refetch:false,
-            accordionindex:'',
-            errors:{
-                name:false,
-                url:false,
-            },
-            errormessages:{},
-        },
-        created:function(){
-          uid = window.location.pathname.split('/')[3]
-          datasource = "/sitemonitor/api/v1/list/"+uid;
-          axios.get(datasource).then(response => {
-              app.$data.allsites = response.data;
-          });
-        },
-
-        methods:{
-            togglemonitoring:function (e) {
-                console.log(e);
-            },
-            update: function (e) {
-                this.reset();
-
-                data = {
-                    name: this.name,
-                    url: this.url,
-                    interval: Math.round(this.interval),
-                    
-                };
-                // var csrftoken = Cookies.get('csrftoken');
-                // console.log(csrftoken);
-                var endpoint = "/sitemonitor/api/v1/update/"+this.objectid;
-                
-                // console.log(JSON.stringify(data));
-                axios.patch(endpoint,data)
-                    .then(function (response) {
-                        console.log(response);
-                        app.$data.refetch=true;
-                        setTimeout(function(){app.$data.showform =false;}, 500);
-
-                        UIkit.accordion(document.getElementById("listdiv")).toggle(app.$data.accordionindex);
-
-                    })
-                    .catch(function (error) {
-                        //console.log(error);
-                        app.$data.errormessages = error.response.data;
-                    });
-                
-
-            },
-            edit:function (site, index) {
-                console.log(site.id);
-                this.$data.name = site.name;
-                this.$data.url = site.url;
-                this.$data.interval = site.interval;
-                this.$data.objectid = site.id;
-                this.$data.showform = true;
-                this.accordionindex = index;
-
-
-
-            },
-            cancel: function (e) {
-                setTimeout(function(){app.$data.showform =false;}, 500);
-                UIkit.accordion(document.getElementById("listdiv")).toggle(app.$data.accordionindex);
-
-            },
-            reset:function () {
-                console.log("reset called");
-                this.errors.name=false;
-                this.errors.url=false;
-            }
-
-        },
-        watch:{
-            interval:function(val){
-                rounded_interval = Math.round(val);
-                this.interval = Math.round(val);
-                document.getElementById('id_interval_rounded').innerHTML = rounded_interval+" Mins.";
-            },
-            errormessages:function (val) {
-                if(val.name){
-                    this.errors.name=true;
-                }
-                if(val.url){
-                    this.errors.url=true;
-                }
-
-            },
-            refetch: function (val) {
-                if (val == true) {
-                    console.log("refetching");
-                    uid = window.location.pathname.split('/')[3]
-                    datasource = "/sitemonitor/api/v1/list/" + uid;
-                    axios.get(datasource).then(response => {
-                        app.$data.allsites = response.data;
-                });
-                    this.refetch=false;
-                }
-
-            }
-        }
-
-    });
-</script>
+<script src="{% static 'js/site_list_scripts.js' %}"></script>
 </body>
 
 </html>
