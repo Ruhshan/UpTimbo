@@ -10,6 +10,7 @@ class Site(models.Model):
     interval = models.IntegerField(default=120)
     isalive = models.BooleanField(default=False)
     ismonitoring = models.BooleanField(default=True)
+    isdeleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user+"@"+str(self.id)

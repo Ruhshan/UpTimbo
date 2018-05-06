@@ -8,7 +8,8 @@ class SiteListAPI(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.kwargs['userid']
-        return Site.objects.filter(user = int(user))
+        return Site.objects.filter(user=int(user), isdeleted=False)
+
 
 class SiteUpdateAPI(generics.UpdateAPIView):
     queryset = Site.objects.all()

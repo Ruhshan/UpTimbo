@@ -87,6 +87,31 @@
 
 
             },
+            del:function (site, index) {
+                UIkit.modal.confirm('Delete '+site.name+"?").then(function () {
+                    data = {
+                        isdeleted:true,
+                        };
+                    endpoint = "/sitemonitor/api/v1/update/"+site.id;
+                    axios.patch(endpoint,data)
+                        .then(function (response) {
+                            console.log(response);
+                            UIkit.accordion(document.getElementById("listdiv")).toggle(index);
+                            setTimeout(function () {
+                                app.$data.refetch = true;
+
+                            }, 500);
+
+
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        })
+
+                }, function () {
+                    console.log('Rejected.')
+                });
+            },
             cancel: function (e) {
                 setTimeout(function(){app.$data.showform =false;}, 500);
                 UIkit.accordion(document.getElementById("listdiv")).toggle(app.$data.accordionindex);
