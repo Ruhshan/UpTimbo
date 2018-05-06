@@ -1,6 +1,4 @@
-<script>
-
-    var app = new Vue({
+var app = new Vue({
         el: "#app",
         data:{
             name:'',
@@ -93,5 +91,6 @@
         }
 
 
-    })
-</script>
+    })/**
+ * Created by ruhshan on 5/6/18.
+ */
