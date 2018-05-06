@@ -46,7 +46,7 @@ var app = new Vue({
                 ismonitoring: !site.ismonitoring,
             };
             endpoint = "/sitemonitor/api/v1/update/" + site.id;
-            axios.patch(endpoint, data,{headers:{Origin: "https://uptimbo.herokuapp.com"}})
+            axios.patch(endpoint, data,{headers:{"Origin": "https://uptimbo.herokuapp.com"}})
                 .then(function (response) {
                     console.log(response);
                 })
