@@ -1,4 +1,4 @@
-from rest_framework.decorators import permission_classes
+from rest_framework.decorators import permission_classes, authentication_classes
 
 from .models import Site
 from .serializers import SiteSerializer
@@ -13,7 +13,8 @@ class SiteListAPI(generics.ListAPIView):
         user = self.kwargs['userid']
         return Site.objects.filter(user=int(user), isdeleted=False)
 
-@permission_classes((AllowAny, ))
+@authentication_classes([])
+@permission_classes([])
 class SiteUpdateAPI(generics.UpdateAPIView):
     queryset = Site.objects.all()
     serializer_class = SiteSerializer
