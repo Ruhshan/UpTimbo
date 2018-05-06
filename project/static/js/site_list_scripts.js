@@ -146,7 +146,18 @@
                     uid = window.location.pathname.split('/')[3]
                     datasource = "/sitemonitor/api/v1/list/" + uid;
                     axios.get(datasource).then(function(response) {
-                        app.$data.allsites = response.data;
+                        allsites = response.data
+                          //app.$data.allsites = allsites;
+
+                          for(var i=0;i<allsites.length;i++){
+                              if(allsites[i].isalive){
+                                  allsites[i].image = '/static/green_circle.png'
+                              }else{
+                                  allsites[i].image = '/static/red_circle.png'
+                              }
+
+                          }
+                          app.$data.allsites = allsites;
                 });
                     this.refetch=false;
                 }
