@@ -43,3 +43,6 @@ def poke_the_site(site):
         result["isalive"] = True
     print("found", result)
     return result
+
+
+#celery -A project worker -l INFO -B

@@ -141,13 +141,13 @@ STATICFILES_DIRS = [
 #STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 
-try:
-    host = config('host')
+host = config('host')
+if host == "PRODUCTION":
     LOAD_SDK = True
-    WEB_VIEW_URL = "https://uptimbo.herokuapp.com/sitemonitor/add"
-    SITE_LIST_URL = "https://uptimbo.herokuapp.com/sitemonitor/list/"
-    SITE_DETAIL_URL = "https://uptimbo.herokuapp.com/sitemonitor/sitedetail/"
-except:
+    WEB_VIEW_URL = "https://uptimbo.ruhshan.xyz/sitemonitor/add"
+    SITE_LIST_URL = "https://uptimbo.ruhshan.xyz/sitemonitor/list/"
+    SITE_DETAIL_URL = "https://uptimbo.ruhshan.xyz/sitemonitor/sitedetail/"
+else:
     host = 'local'
     LOAD_SDK = False
     WEB_VIEW_URL = "http://localhost:8000/sitemonitor/add"
