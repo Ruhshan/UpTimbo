@@ -28,26 +28,24 @@ class BotView(generic.View):
 
     # Post function to handle Facebook messages
     def post(self, request, *args, **kwargs):
-        # Converts the text payload into a python dictionary
-        #incoming_payload = json.loads(self.request.body.decode('utf-8'))
+
         messages = Receiver(request).messages
 
         for m in messages:
-            #print(m.sender_name, m.type)
-            #rep = Reply(m.sender)
+
             if m.type == "text":
                 quick_reply = QuickReply(m.sender, title_text="Hello {}, What can I do for you today".format(m.sender_name))
-                quick_reply.add(content_type="text", title="View Sites",payload="view")
+                quick_reply.add(content_type="text", title="Site's List", payload="view")
                 quick_reply.add(content_type="text", title="Add New Site", payload="add")
                 quick_reply.send()
             elif m.type == "quick_reply":
                 if m.payload == "add":
                     add_site = WebViewReply(m.sender)
-                    add_site.set(text="Adding Site", title="Click to add site", url=settings.WEB_VIEW_URL)
+                    add_site.set(text="Adding New Site", title="Click to add a new site", url=settings.WEB_VIEW_URL)
                     add_site.send()
                 elif m.payload == "view":
                     view_list = WebViewReply(m.sender)
-                    view_list.set(text="Your List", title="Click to view site", url=settings.SITE_LIST_URL+m.sender)
+                    view_list.set(text="Your List", title="Click to view your sites list", url=settings.SITE_LIST_URL+m.sender)
                     view_list.send()
 
         return HttpResponse()
