@@ -21,6 +21,9 @@ def site_validator(data):
     if url_valid(data['url'])==False:
         errors['url'] = True
         has_error = True
+    elif url_valid(data['url'])==True:
+        data['url'] = URLField().clean(data['url'])
+
 
     data['errors']=errors
     return has_error,data

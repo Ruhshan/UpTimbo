@@ -32,9 +32,9 @@ var app = new Vue({
                         console.log(response.data.name);
 
                         setTimeout(function () {
-
                         app.$data.showmessage=true;
                         app.$data.objectid = response.data.objectid;
+                        app.$data.url = response.data.url;
 
                         },500);
 
