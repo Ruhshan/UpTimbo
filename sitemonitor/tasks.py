@@ -15,6 +15,8 @@ def check_and_notify():
         diff = now - site.created_at
         elapsed = int(diff.total_seconds() / 60)
         interval = int(site.interval/60)
+        print("elapsed", elapsed)
+        print("Interval", interval)
 
         if elapsed % interval == 0:
             site_status = poke_the_site(site)
