@@ -15,7 +15,7 @@ app.conf.broker_url = 'redis://localhost:6379'
 app.conf.beat_schedule = {
     'every-minute': {
         'task': 'check_and_notify',
-        'schedule':10.0,
+        'schedule':60.0,
 
     },
 }
