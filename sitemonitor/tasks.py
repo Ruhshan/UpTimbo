@@ -14,7 +14,7 @@ def check_and_notify():
         now = timezone.now()
         diff = now - site.created_at
         elapsed = int(diff.total_seconds() / 60)
-        interval = int(site.interval/60)
+        interval = site.interval
         print("elapsed", elapsed)
         print("Interval", interval)
 
