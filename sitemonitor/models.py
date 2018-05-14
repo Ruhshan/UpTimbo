@@ -1,5 +1,5 @@
 from django.db import models
-
+from datetime import  timezone
 # Create your models here.
 
 
@@ -11,6 +11,7 @@ class Site(models.Model):
     isalive = models.BooleanField(default=False)
     ismonitoring = models.BooleanField(default=True)
     isdeleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user+"@"+str(self.id)
