@@ -68,7 +68,7 @@ class SiteAdd(generic.View):
 
 class SiteList(generic.View):
     def get(self, request, userid):
-        sites = Site.objects.filter(user=1650306208417146)
+        sites = Site.objects.filter(user=userid)
         print(sites)
         response = render(request, 'sitemonitor/site_list.html', {'sites':sites, 'endpoint':settings.SITE_DETAIL_URL, 'update_endpoint':settings.WEB_VIEW_URL})
         if 'HTTP_REFERER' in request.META:
