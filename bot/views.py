@@ -15,6 +15,7 @@ from messengerplatform.replies import Reply, TextReply, QuickReply, WebViewReply
 PAGE_ACCESS_TOKEN = settings.PAGE_ACCESS_TOKEN
 VERIFY_TOKEN = settings.VERIFY_TOKEN
 
+
 class BotView(generic.View):
     def get(self, request, *args, **kwargs):
         if self.request.GET['hub.verify_token'] == VERIFY_TOKEN:
@@ -27,6 +28,7 @@ class BotView(generic.View):
         return generic.View.dispatch(self, request, *args, **kwargs)
 
     # Post function to handle Facebook messages
+
     def post(self, request, *args, **kwargs):
 
         messages = Receiver(request).messages
@@ -34,18 +36,22 @@ class BotView(generic.View):
         for m in messages:
 
             if m.type == "text":
+                #When message type is text, the bot reponds with greeting and provides options for viewing existing sites
+                #Or adding a new site for monitoring
                 quick_reply = QuickReply(m.sender, title_text="Hello {}, What can I do for you today".format(m.sender_name))
-                quick_reply.add(content_type="text", title="Site's List", payload="view")
+                quick_reply.add(content_type="text", title="Sites List", payload="view")
                 quick_reply.add(content_type="text", title="Add New Site", payload="add")
                 quick_reply.send()
             elif m.type == "quick_reply":
+                #When message type is quic_reply and payload is add, bot will open a webview for adding a new site
+                #When payload is view, bot will open a webview for seeing and editing existing sites
                 if m.payload == "add":
                     add_site = WebViewReply(m.sender)
-                    add_site.set(text="Adding New Site", title="Click to add a new site", url=settings.WEB_VIEW_URL)
+                    add_site.set(text="To add a new site for monitoring", title="Click me!", url=settings.WEB_VIEW_URL)
                     add_site.send()
                 elif m.payload == "view":
                     view_list = WebViewReply(m.sender)
-                    view_list.set(text="Your List", title="Click to view your sites list", url=settings.SITE_LIST_URL+m.sender)
+                    view_list.set(text="To see your site list and edit one of them", title="Click me!", url=settings.SITE_LIST_URL+m.sender)
                     view_list.send()
 
         return HttpResponse()

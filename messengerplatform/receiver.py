@@ -65,8 +65,9 @@ class Message():
 
 class Receiver():
     """
-    To do
+    It takes a request objects and makes the messages available for easy use
     """
+
     def __init__(self, request):
         self.request = request
         self.data = json.loads(request.body.decode('utf-8'))
