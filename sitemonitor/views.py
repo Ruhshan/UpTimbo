@@ -70,7 +70,7 @@ class SiteList(generic.View):
     def get(self, request, userid):
         sites = Site.objects.filter(user=userid)
         print(sites)
-        response = render(request, 'sitemonitor/site_list.html', {'sites':sites, 'endpoint':settings.SITE_DETAIL_URL, 'update_endpoint':settings.WEB_VIEW_URL})
+        response = render(request, 'sitemonitor/site_list.html', {'sites':sites})
         if 'HTTP_REFERER' in request.META:
             referer = request.META['HTTP_REFERER']
         else:
